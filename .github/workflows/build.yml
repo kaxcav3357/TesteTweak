@@ -1,0 +1,31 @@
+name: Build Tweak
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Theos
+        uses: Randomblock1/theos-action@v1
+        with:
+          theos-dir: theos
+          theos-src: https://github.com/theos/theos
+          theos-sdks: https://github.com/theos/sdks
+          theos-sdks-branch: master
+
+      - name: Build package
+        run: |
+          make package FINALPACKAGE=1
+
+      - name: Upload .deb
+        uses: actions/upload-artifact@v3
+        with:
+          name: tweak-deb
+          path: packages/*.deb
